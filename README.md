@@ -26,8 +26,6 @@ The public installer contains:
 - four signed educational templates
 - the Quick Start example project
 
-Procera Signer is a private authoring utility and is not included in the public distribution.
-
 ## Included Educational Templates
 
 - Introductory S–X Model
