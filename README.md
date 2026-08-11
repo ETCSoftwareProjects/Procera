@@ -54,17 +54,20 @@ Installation and use are governed by the EULA supplied with each release.
 
 ### Procera Plant Designer
 
-Procera Plant Designer is a separately installed companion application for treatment-process design and Procera project generation.
+Procera Plant Designer is a separately installed companion application for ATV-DVWK-A 131-based activated sludge process design and Procera project generation.
 
 It requires Procera 1.0.1 or later and is not included in the main Procera installer.
 
-Additional information is available in the `Companion Applications/Procera Plant Designer` directory.
+- [Procera Plant Designer information](Companion%20Applications/Procera%20Plant%20Designer)
+- [Download Procera Plant Designer 0.1.4](../../releases/tag/plant-designer-v0.1.4)
 
 ## Course Materials
 
 Educational materials developed for use with Procera will be made available in the `Course Materials` directory.
 
 The initial collection will cover activated sludge processes.
+
+- [Activated Sludge Processes](Course%20Materials/Activated%20Sludge%20Processes)
 
 ## Documentation
 
