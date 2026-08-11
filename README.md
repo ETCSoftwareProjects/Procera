@@ -50,6 +50,22 @@ The application source code is not included, and Procera is not open-source soft
 
 Installation and use are governed by the EULA supplied with each release.
 
+## Companion Applications
+
+### Procera Plant Designer
+
+Procera Plant Designer is a separately installed companion application for treatment-process design and Procera project generation.
+
+It requires Procera 1.0.1 or later and is not included in the main Procera installer.
+
+Additional information is available in the `Companion Applications/Procera Plant Designer` directory.
+
+## Course Materials
+
+Educational materials developed for use with Procera will be made available in the `Course Materials` directory.
+
+The initial collection will cover activated sludge processes.
+
 ## Documentation
 
 Each release includes a version-specific Procera User Manual in PDF format.
