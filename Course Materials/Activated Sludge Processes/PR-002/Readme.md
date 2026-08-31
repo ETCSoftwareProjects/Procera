@@ -56,4 +56,4 @@ Download the activity workbook from this folder and complete the questions using
 
 If you have completed or reviewed this activity, please provide feedback:
 
-[Rate PR-002](https://docs.google.com/forms/d/e/1FAIpQLSd-fvzFPO2sYr0FNLKhnR3-aXxAxvOvfE0AztIXEI8Z9IXzCQ/viewform?usp=publish-editor)
+[Rate PR-002](https://docs.google.com/forms/d/e/1FAIpQLSdEWdjYdo1Dn3PcOmkneriFf8klX7Rd4UgKoWMOXoyIsSizWA/viewform?usp=dialog)
