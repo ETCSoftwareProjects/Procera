@@ -1,1 +1,163 @@
+name: Update Activity Ratings
 
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */6 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  update-ratings:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Update PR-001 rating
+        env:
+          PR001_URL: "https://script.google.com/macros/s/AKfycbx_mDzK93rJo_4NVPRBIYxQFRvatd9c2QEHpJSRx_y7BafuAPWIU1MryUVJ50MfOk5Z4w/exec"
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          import urllib.request
+          from pathlib import Path
+
+          url = os.environ["PR001_URL"]
+
+          with urllib.request.urlopen(url) as response:
+              data = json.load(response)
+
+          responses = int(data["responses"])
+          rating = str(data["rating"])
+          stars = str(data["stars"])
+
+          print("PR-001 data:", data)
+
+          # Safety check: do not write spreadsheet errors to GitHub.
+          if "#" in rating or "#" in stars:
+              raise RuntimeError("Google Sheet returned an error value.")
+
+          # -------------------------------------------------
+          # Update PR-001/README.md
+          # -------------------------------------------------
+
+          activity_path = Path(
+              "Course Materials/Activated Sludge Processes/PR-001/README.md"
+          )
+
+          text = activity_path.read_text(encoding="utf-8")
+
+          if responses < 10:
+              rating_block = (
+                  "<!-- RATING_START -->\n"
+                  "**Not yet rated**  \n"
+                  f"**Responses:** {responses}\n"
+                  "<!-- RATING_END -->"
+              )
+          else:
+              rating_block = (
+                  "<!-- RATING_START -->\n"
+                  f"**{stars} {rating} / 5**  \n"
+                  f"**Responses:** {responses}\n"
+                  "<!-- RATING_END -->"
+              )
+
+          new_text, count = re.subn(
+              r"<!-- RATING_START -->.*?<!-- RATING_END -->",
+              rating_block,
+              text,
+              flags=re.S,
+          )
+
+          if count != 1:
+              raise RuntimeError(
+                  "Could not find exactly one RATING_START/RATING_END block."
+              )
+
+          activity_path.write_text(new_text, encoding="utf-8")
+
+          # -------------------------------------------------
+          # Update main Activated Sludge Processes README
+          # -------------------------------------------------
+
+          index_path = Path(
+              "Course Materials/Activated Sludge Processes/README.md"
+          )
+
+          text = index_path.read_text(encoding="utf-8")
+
+          match = re.search(
+              r"(<!-- PR001_START -->)(.*?)(<!-- PR001_END -->)",
+              text,
+              flags=re.S,
+          )
+
+          if not match:
+              raise RuntimeError(
+                  "Could not find PR001_START/PR001_END markers."
+              )
+
+          block = match.group(2)
+
+          row_match = re.search(r"^\|.*\|$", block, flags=re.M)
+
+          if not row_match:
+              raise RuntimeError("Could not find the PR-001 table row.")
+
+          row = row_match.group(0)
+
+          cells = [cell.strip() for cell in row.split("|")[1:-1]]
+
+          if len(cells) != 6:
+              raise RuntimeError(
+                  f"Expected 6 table columns, found {len(cells)}."
+              )
+
+          if responses < 10:
+              rating_text = "Not yet rated"
+          else:
+              rating_text = f"{stars} {rating} / 5"
+
+          # Preserve Activity, Topic, Contributor and Feedback columns.
+          # Change only Rating and Responses.
+          cells[3] = rating_text
+          cells[4] = str(responses)
+
+          new_row = "| " + " | ".join(cells) + " |"
+
+          new_block = block.replace(row, new_row)
+
+          text = (
+              text[:match.start(2)]
+              + new_block
+              + text[match.end(2):]
+          )
+
+          index_path.write_text(text, encoding="utf-8")
+
+          print(
+              f"PR-001 updated: {rating_text}, "
+              f"{responses} responses"
+          )
+          PY
+
+      - name: Commit rating changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add "Course Materials/Activated Sludge Processes/PR-001/README.md"
+          git add "Course Materials/Activated Sludge Processes/README.md"
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Update PR-001 activity rating"
+          git push
