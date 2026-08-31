@@ -15,8 +15,8 @@ Hydraulic retention time and substrate removal in activated sludge systems.
 ## Activity Rating
 
 <!-- RATING_START -->
-**★★★★★ 5 / 5**  
-**Responses:** 10
+**★★★★★ 4,9 / 5**  
+**Responses:** 11
 <!-- RATING_END -->
 
 The public rating will be added after sufficient user feedback has been collected.
