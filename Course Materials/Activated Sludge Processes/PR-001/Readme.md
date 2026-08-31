@@ -14,8 +14,10 @@ Need for secondary clarification and biomass retention in activated sludge syste
 
 ## Activity Rating
 
+<!-- RATING_START -->
 **Not yet rated**  
 **Responses:** 0
+<!-- RATING_END -->
 
 The public rating will be added after sufficient user feedback has been collected.
 
