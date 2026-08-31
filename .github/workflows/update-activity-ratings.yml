@@ -47,7 +47,7 @@ jobs:
           # -------------------------------------------------
 
           activity_path = Path(
-              "Course Materials/Activated Sludge Processes/PR-001/README.md"
+              "Course Materials/Activated Sludge Processes/PR-001/Readme.md"
           )
 
           text = activity_path.read_text(encoding="utf-8")
@@ -151,7 +151,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add "Course Materials/Activated Sludge Processes/PR-001/README.md"
+          git add "Course Materials/Activated Sludge Processes/PR-001/Readme.md"
           git add "Course Materials/Activated Sludge Processes/README.md"
 
           if git diff --cached --quiet; then
