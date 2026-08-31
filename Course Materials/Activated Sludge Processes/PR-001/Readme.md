@@ -1,20 +1,26 @@
 # PR-001 — THINK YOU DON'T NEED A CLARIFIER?
 
+**Contributor:** Selami Demir
+**Institution:** Yıldız Technical University
+**Activity ID:** PR-001  
+**Version:** 1.0
+
 ## Topic
 
 Need for secondary clarification and biomass retention in activated sludge systems.
+
+## Activity Rating
+
+**Not yet rated**  
+**Responses:** 0
+
+The public rating will be added after sufficient user feedback has been collected.
 
 ## Activity Files
 
 Download the activity workbook from this folder and complete the questions using Procera.
 
-## Activity Rating
-
-**Not yet rated**
-
-The public rating will be added after sufficient user feedback has been collected.
-
-### Rate This Activity
+## Rate This Activity
 
 If you have completed or reviewed this activity, please provide feedback:
 
