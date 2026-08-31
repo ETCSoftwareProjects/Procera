@@ -28,7 +28,7 @@ jobs:
           import urllib.request
           from pathlib import Path
 
-          BASE = Path("Course Materials/Activated Sludge Processes")
+          BASE = Path("Course Materials")
           INDEX = BASE / "Readme.md"
 
           activities = [
@@ -100,7 +100,6 @@ jobs:
 
           def update_index_row(text, activity_id, data):
               lines = text.splitlines()
-
               found = False
 
               for i, line in enumerate(lines):
@@ -168,9 +167,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add "Course Materials/Activated Sludge Processes/PR-001/Readme.md"
-          git add "Course Materials/Activated Sludge Processes/PR-002/Readme.md"
-          git add "Course Materials/Activated Sludge Processes/Readme.md"
+          git add "Course Materials/PR-001/Readme.md"
+          git add "Course Materials/PR-002/Readme.md"
+          git add "Course Materials/Readme.md"
 
           if git diff --cached --quiet; then
             echo "No changes to commit."
