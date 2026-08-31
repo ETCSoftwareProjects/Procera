@@ -16,9 +16,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Update PR-001 rating
+      - name: Update activity ratings
         env:
           PR001_URL: "https://script.google.com/macros/s/AKfycbx_mDzK93rJo_4NVPRBIYxQFRvatd9c2QEHpJSRx_y7BafuAPWIU1MryUVJ50MfOk5Z4w/exec"
+          PR002_URL: "https://script.google.com/macros/s/AKfycbyi6os1IJG1t92GvHucW6VEAJGSiEhlzkGB9chR6e2vuohXYDecEtv-2a46DiufOtgn/exec"
         run: |
           python - <<'PY'
           import json
@@ -27,123 +28,145 @@ jobs:
           import urllib.request
           from pathlib import Path
 
-          url = os.environ["PR001_URL"]
+          BASE = Path("Course Materials/Activated Sludge Processes")
+          INDEX = BASE / "Readme.md"
 
-          with urllib.request.urlopen(url) as response:
-              data = json.load(response)
+          activities = [
+              {
+                  "id": "PR-001",
+                  "url": os.environ["PR001_URL"],
+                  "readme": BASE / "PR-001" / "Readme.md",
+                  "index_start": "PR001_START",
+                  "index_end": "PR001_END",
+              },
+              {
+                  "id": "PR-002",
+                  "url": os.environ["PR002_URL"],
+                  "readme": BASE / "PR-002" / "Readme.md",
+                  "index_start": "PR002_START",
+                  "index_end": "PR002_END",
+              },
+          ]
 
-          responses = int(data["responses"])
-          rating = str(data["rating"])
-          stars = str(data["stars"])
+          def fetch(url):
+              with urllib.request.urlopen(url) as response:
+                  return json.load(response)
 
-          print("PR-001 data:", data)
+          def rating_text(data):
+              responses = int(data["responses"])
+              rating = str(data["rating"])
+              stars = str(data["stars"])
 
-          # Safety check: do not write spreadsheet errors to GitHub.
-          if "#" in rating or "#" in stars:
-              raise RuntimeError("Google Sheet returned an error value.")
+              if "#" in rating or "#" in stars:
+                  raise RuntimeError(
+                      f'{data["activity"]}: Google Sheet returned an error value.'
+                  )
 
-          # -------------------------------------------------
-          # Update PR-001/Readme.md
-          # -------------------------------------------------
+              if responses < 10:
+                  return "Not yet rated"
+              return f"{stars} {rating} / 5"
 
-          activity_path = Path(
-              "Course Materials/Activated Sludge Processes/PR-001/Readme.md"
-          )
+          def update_activity_readme(path, data):
+              responses = int(data["responses"])
+              public_rating = rating_text(data)
 
-          text = activity_path.read_text(encoding="utf-8")
+              if responses < 10:
+                  block = (
+                      "<!-- RATING_START -->\n"
+                      "**Not yet rated**  \n"
+                      f"**Responses:** {responses}\n"
+                      "<!-- RATING_END -->"
+                  )
+              else:
+                  block = (
+                      "<!-- RATING_START -->\n"
+                      f"**{public_rating}**  \n"
+                      f"**Responses:** {responses}\n"
+                      "<!-- RATING_END -->"
+                  )
 
-          if responses < 10:
-              rating_block = (
-                  "<!-- RATING_START -->\n"
-                  "**Not yet rated**  \n"
-                  f"**Responses:** {responses}\n"
-                  "<!-- RATING_END -->"
-              )
-          else:
-              rating_block = (
-                  "<!-- RATING_START -->\n"
-                  f"**{stars} {rating} / 5**  \n"
-                  f"**Responses:** {responses}\n"
-                  "<!-- RATING_END -->"
-              )
+              text = path.read_text(encoding="utf-8")
 
-          new_text, count = re.subn(
-              r"<!-- RATING_START -->.*?<!-- RATING_END -->",
-              rating_block,
-              text,
-              flags=re.S,
-          )
-
-          if count != 1:
-              raise RuntimeError(
-                  "Could not find exactly one RATING_START/RATING_END block."
-              )
-
-          activity_path.write_text(new_text, encoding="utf-8")
-
-          # -------------------------------------------------
-          # Update main Activated Sludge Processes Readme
-          # -------------------------------------------------
-
-          index_path = Path(
-              "Course Materials/Activated Sludge Processes/Readme"
-          )
-
-          text = index_path.read_text(encoding="utf-8")
-
-          match = re.search(
-              r"(<!-- PR001_START -->)(.*?)(<!-- PR001_END -->)",
-              text,
-              flags=re.S,
-          )
-
-          if not match:
-              raise RuntimeError(
-                  "Could not find PR001_START/PR001_END markers."
+              new_text, count = re.subn(
+                  r"<!-- RATING_START -->.*?<!-- RATING_END -->",
+                  block,
+                  text,
+                  flags=re.S,
               )
 
-          block = match.group(2)
+              if count != 1:
+                  raise RuntimeError(
+                      f"{path}: could not find exactly one rating block."
+                  )
 
-          row_match = re.search(r"^\|.*\|$", block, flags=re.M)
+              path.write_text(new_text, encoding="utf-8")
 
-          if not row_match:
-              raise RuntimeError("Could not find the PR-001 table row.")
+          def update_index(text, activity, data):
+              start = activity["index_start"]
+              end = activity["index_end"]
 
-          row = row_match.group(0)
-
-          cells = [cell.strip() for cell in row.split("|")[1:-1]]
-
-          if len(cells) != 6:
-              raise RuntimeError(
-                  f"Expected 6 table columns, found {len(cells)}."
+              pattern = (
+                  rf"(<!-- {start} -->)"
+                  rf"(.*?)"
+                  rf"(<!-- {end} -->)"
               )
 
-          if responses < 10:
-              rating_text = "Not yet rated"
-          else:
-              rating_text = f"{stars} {rating} / 5"
+              match = re.search(pattern, text, flags=re.S)
 
-          # Preserve Activity, Topic, Contributor and Feedback columns.
-          # Change only Rating and Responses.
-          cells[3] = rating_text
-          cells[4] = str(responses)
+              if not match:
+                  raise RuntimeError(
+                      f'{activity["id"]}: index markers were not found.'
+                  )
 
-          new_row = "| " + " | ".join(cells) + " |"
+              block = match.group(2)
+              row_match = re.search(r"^\|.*\|$", block, flags=re.M)
 
-          new_block = block.replace(row, new_row)
+              if not row_match:
+                  raise RuntimeError(
+                      f'{activity["id"]}: table row was not found.'
+                  )
 
-          text = (
-              text[:match.start(2)]
-              + new_block
-              + text[match.end(2):]
-          )
+              row = row_match.group(0)
+              cells = [c.strip() for c in row.split("|")[1:-1]]
 
-          index_path.write_text(text, encoding="utf-8")
+              if len(cells) != 6:
+                  raise RuntimeError(
+                      f'{activity["id"]}: expected 6 table columns, '
+                      f'found {len(cells)}.'
+                  )
 
-          print(
-              f"PR-001 updated: {rating_text}, "
-              f"{responses} responses"
-          )
+              # Preserve Activity, Topic, Contributor and Feedback.
+              # Change only Rating and Responses.
+              cells[3] = rating_text(data)
+              cells[4] = str(int(data["responses"]))
+
+              new_row = "| " + " | ".join(cells) + " |"
+              new_block = block.replace(row, new_row)
+
+              return (
+                  text[:match.start(2)]
+                  + new_block
+                  + text[match.end(2):]
+              )
+
+          index_text = INDEX.read_text(encoding="utf-8")
+
+          for activity in activities:
+              data = fetch(activity["url"])
+
+              print(activity["id"], data)
+
+              if data.get("activity") != activity["id"]:
+                  raise RuntimeError(
+                      f'Endpoint mismatch for {activity["id"]}.'
+                  )
+
+              update_activity_readme(activity["readme"], data)
+              index_text = update_index(index_text, activity, data)
+
+          INDEX.write_text(index_text, encoding="utf-8")
+
+          print("All activity ratings updated successfully.")
           PY
 
       - name: Commit rating changes
@@ -152,12 +175,13 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add "Course Materials/Activated Sludge Processes/PR-001/Readme.md"
-          git add "Course Materials/Activated Sludge Processes/Readme"
+          git add "Course Materials/Activated Sludge Processes/PR-002/Readme.md"
+          git add "Course Materials/Activated Sludge Processes/Readme.md"
 
           if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0
           fi
 
-          git commit -m "Update PR-001 activity rating"
+          git commit -m "Update activity ratings"
           git push
