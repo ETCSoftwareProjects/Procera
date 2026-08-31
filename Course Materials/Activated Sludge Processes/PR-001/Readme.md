@@ -1,9 +1,8 @@
 # PR-001 — THINK YOU DON'T NEED A CLARIFIER?
 
 **Contributor:** Selami Demir
-
 **Institution:** Yıldız Technical University
-**Activity ID:** PR-001  
+**Activity ID:** PR-001 
 **Version:** 1.0
 
 ## Topic
