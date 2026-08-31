@@ -12,8 +12,8 @@ Users who complete or review an activity are encouraged to submit the short feed
 
 | Activity | Topic | Contributor | Rating | Responses | Feedback |
 |---|---|---|---:|---:|---|
-| [PR-001 — THINK YOU DON'T NEED A CLARIFIER?](./PR-001/) | Need for secondary clarification and biomass retention | **Selami Demir** | ★★★★☆ 4 / 5 | 10 | [Rate PR-001](https://docs.google.com/forms/d/e/1FAIpQLSd-fvzFPO2sYr0FNLKhnR3-aXxAxvOvfE0AztIXEI8Z9IXzCQ/viewform?usp=dialog) |
-| [PR-002 — HOW LONG IS LONG ENOUGH?](./PR-002/) | Hydraulic retention time and substrate removal | **Selami Demir** | ★★★★★ 5 / 5 | 10 | [Rate PR-002](https://docs.google.com/forms/d/e/1FAIpQLSdEWdjYdo1Dn3PcOmkneriFf8klX7Rd4UgKoWMOXoyIsSizWA/viewform?usp=dialog) |
+| [PR-001 — Think you don't need a clarifier??](./PR-001/) | Need for secondary clarification and biomass retention | **Selami Demir** | ★★★★☆ 4 / 5 | 10 | [Rate PR-001](https://docs.google.com/forms/d/e/1FAIpQLSd-fvzFPO2sYr0FNLKhnR3-aXxAxvOvfE0AztIXEI8Z9IXzCQ/viewform?usp=dialog) |
+| [PR-002 — How long is long enough??](./PR-002/) | Hydraulic retention time and substrate removal | **Selami Demir** | ★★★★★ 5 / 5 | 10 | [Rate PR-002](https://docs.google.com/forms/d/e/1FAIpQLSdEWdjYdo1Dn3PcOmkneriFf8klX7Rd4UgKoWMOXoyIsSizWA/viewform?usp=dialog) |
 ## Activity Rating
 
 The activity rating is based on the response to:
