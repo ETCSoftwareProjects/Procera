@@ -29,4 +29,4 @@ Download the activity workbook from this folder and complete the questions using
 
 If you have completed or reviewed this activity, please provide feedback:
 
-[Rate PR-001](https://docs.google.com/forms/d/e/1FAIpQLSdEWdjYdo1Dn3PcOmkneriFf8klX7Rd4UgKoWMOXoyIsSizWA/viewform?usp=publish-editor)
+[Rate PR-001](https://docs.google.com/forms/d/e/1FAIpQLSd-fvzFPO2sYr0FNLKhnR3-aXxAxvOvfE0AztIXEI8Z9IXzCQ/viewform?usp=dialog)
