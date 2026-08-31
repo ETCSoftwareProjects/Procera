@@ -1,6 +1,6 @@
 # PR-003 — WAIT... SLUDGE HAS AN AGE?
 
-**Contributor:** Selami Demir
+**Contributor:** Neslihan Manav Demir
 
 **Institution:** Yıldız Technical University
 
