@@ -36,15 +36,11 @@ jobs:
                   "id": "PR-001",
                   "url": os.environ["PR001_URL"],
                   "readme": BASE / "PR-001" / "Readme.md",
-                  "index_start": "PR001_START",
-                  "index_end": "PR001_END",
               },
               {
                   "id": "PR-002",
                   "url": os.environ["PR002_URL"],
                   "readme": BASE / "PR-002" / "Readme.md",
-                  "index_start": "PR002_START",
-                  "index_end": "PR002_END",
               },
           ]
 
@@ -52,23 +48,24 @@ jobs:
               with urllib.request.urlopen(url) as response:
                   return json.load(response)
 
-          def rating_text(data):
+          def public_rating(data):
               responses = int(data["responses"])
               rating = str(data["rating"])
               stars = str(data["stars"])
 
               if "#" in rating or "#" in stars:
                   raise RuntimeError(
-                      f'{data["activity"]}: Google Sheet returned an error value.'
+                      f'{data["activity"]}: spreadsheet returned an error.'
                   )
 
               if responses < 10:
                   return "Not yet rated"
+
               return f"{stars} {rating} / 5"
 
           def update_activity_readme(path, data):
               responses = int(data["responses"])
-              public_rating = rating_text(data)
+              rating = public_rating(data)
 
               if responses < 10:
                   block = (
@@ -80,14 +77,14 @@ jobs:
               else:
                   block = (
                       "<!-- RATING_START -->\n"
-                      f"**{public_rating}**  \n"
+                      f"**{rating}**  \n"
                       f"**Responses:** {responses}\n"
                       "<!-- RATING_END -->"
                   )
 
               text = path.read_text(encoding="utf-8")
 
-              new_text, count = re.subn(
+              text, count = re.subn(
                   r"<!-- RATING_START -->.*?<!-- RATING_END -->",
                   block,
                   text,
@@ -96,58 +93,47 @@ jobs:
 
               if count != 1:
                   raise RuntimeError(
-                      f"{path}: could not find exactly one rating block."
+                      f"{path}: rating block not found."
                   )
 
-              path.write_text(new_text, encoding="utf-8")
+              path.write_text(text, encoding="utf-8")
 
-          def update_index(text, activity, data):
-              start = activity["index_start"]
-              end = activity["index_end"]
+          def update_index_row(text, activity_id, data):
+              lines = text.splitlines()
 
-              pattern = (
-                  rf"(<!-- {start} -->)"
-                  rf"(.*?)"
-                  rf"(<!-- {end} -->)"
-              )
+              found = False
 
-              match = re.search(pattern, text, flags=re.S)
+              for i, line in enumerate(lines):
+                  if (
+                      line.startswith("|")
+                      and f"[{activity_id} —" in line
+                  ):
+                      cells = [
+                          c.strip()
+                          for c in line.split("|")[1:-1]
+                      ]
 
-              if not match:
+                      if len(cells) != 6:
+                          raise RuntimeError(
+                              f"{activity_id}: expected 6 table columns."
+                          )
+
+                      cells[3] = public_rating(data)
+                      cells[4] = str(int(data["responses"]))
+
+                      lines[i] = (
+                          "| " + " | ".join(cells) + " |"
+                      )
+
+                      found = True
+                      break
+
+              if not found:
                   raise RuntimeError(
-                      f'{activity["id"]}: index markers were not found.'
+                      f"{activity_id}: activity table row not found."
                   )
 
-              block = match.group(2)
-              row_match = re.search(r"^\|.*\|$", block, flags=re.M)
-
-              if not row_match:
-                  raise RuntimeError(
-                      f'{activity["id"]}: table row was not found.'
-                  )
-
-              row = row_match.group(0)
-              cells = [c.strip() for c in row.split("|")[1:-1]]
-
-              if len(cells) != 6:
-                  raise RuntimeError(
-                      f'{activity["id"]}: expected 6 table columns, '
-                      f'found {len(cells)}.'
-                  )
-
-              # Preserve Activity, Topic, Contributor and Feedback.
-              # Change only Rating and Responses.
-              cells[3] = rating_text(data)
-              cells[4] = str(int(data["responses"]))
-
-              new_row = "| " + " | ".join(cells) + " |"
-              new_block = block.replace(row, new_row)
-
-              return (
-                  text[:match.start(2)]
-                  + new_block
-                  + text[match.end(2):]
-              )
+              return "\n".join(lines) + "\n"
 
           index_text = INDEX.read_text(encoding="utf-8")
 
@@ -161,8 +147,16 @@ jobs:
                       f'Endpoint mismatch for {activity["id"]}.'
                   )
 
-              update_activity_readme(activity["readme"], data)
-              index_text = update_index(index_text, activity, data)
+              update_activity_readme(
+                  activity["readme"],
+                  data
+              )
+
+              index_text = update_index_row(
+                  index_text,
+                  activity["id"],
+                  data
+              )
 
           INDEX.write_text(index_text, encoding="utf-8")
 
