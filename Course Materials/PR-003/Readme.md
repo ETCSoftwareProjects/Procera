@@ -16,7 +16,7 @@ Sludge retention time and waste solids production in activated sludge systems.
 
 <!-- RATING_START -->
 **Not yet rated**  
-**Responses:** 1
+**Responses:** 0
 <!-- RATING_END -->
 
 The public rating will be added after sufficient user feedback has been collected.
