@@ -36,8 +36,8 @@ Activities with at least 10 responses are ranked according to their average over
 <!-- LEADERBOARD_START -->
 | Rank | Activity | Rating | Responses | Contributor |
 |---:|---|---:|---:|---|
-| 1 | PR-002 | ★★★★★ 5 / 5 | 10 | Selami Demir |
-| 2 | PR-001 | ★★★★☆ 4 / 5 | 10 | Selami Demir |
+| 1 | [PR-002 — How long is long enough?](./PR-002/) | ★★★★★ 4,6 / 5 | 12 | **Selami Demir** |
+| 2 | [PR-001 — Think you don't need a clarifier?](./PR-001/) | ★★★★☆ 4 / 5 | 10 | **Selami Demir** |
 <!-- LEADERBOARD_END -->
 
 ## Contributing an Activity
