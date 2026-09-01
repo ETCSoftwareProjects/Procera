@@ -63,11 +63,14 @@ It requires Procera 1.0.1 or later and is not included in the main Procera insta
 
 ## Course Materials
 
-Educational materials developed for use with Procera will be made available in the `Course Materials` directory.
+Procera educational activities provide structured assignments for teaching and learning activated sludge process concepts through modeling and simulation.
 
-The initial collection will cover activated sludge processes.
+Each activity may include an assignment workbook, Procera project or template files, supporting materials, and a short video briefing. Activity ratings and user feedback are also available through the course-materials collection.
 
-- [Activated Sludge Processes](Course%20Materials/Activated%20Sludge%20Processes)
+- [Browse Procera Course Materials](Course%20Materials)
+- [Watch the Procera Educational Activity Series on YouTube](https://www.youtube.com/@ETCSoftwareProjects/playlists)
+
+The YouTube videos are activity briefings rather than solution videos. They introduce the purpose and setup of each activity and demonstrate only the initial steps needed to begin the assignment.
 
 ## Documentation
 
