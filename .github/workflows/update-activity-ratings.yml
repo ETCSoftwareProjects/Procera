@@ -21,8 +21,8 @@ jobs:
           PR001_URL: "https://script.google.com/macros/s/AKfycbx_mDzK93rJo_4NVPRBIYxQFRvatd9c2QEHpJSRx_y7BafuAPWIU1MryUVJ50MfOk5Z4w/exec"
           PR002_URL: "https://script.google.com/macros/s/AKfycbyi6os1IJG1t92GvHucW6VEAJGSiEhlzkGB9chR6e2vuohXYDecEtv-2a46DiufOtgn/exec"
           PR003_URL: "https://script.google.com/macros/s/AKfycby2xkSCE54PXRNvQY2AlfmGj5qeKMPqKFJ9Eynau1DNLxqA2l8uJsoUmDK2J_GUcmE/exec"
-          PR004_URL: ""  # Add PR-004 Apps Script /exec endpoint when available.
-          PROCERA_URL: ""  # Add Procera User Feedback Apps Script /exec endpoint when deployed.
+          PR004_URL: "https://script.google.com/macros/s/AKfycbzlnezV2gE8CYHOcerdk2131xEzTxlxduIeQBgvuBtk_peNQuRD-8Zs-F8QdoR_JzYd/exec"  # Add PR-004 Apps Script /exec endpoint when available.
+          PROCERA_URL: "https://script.google.com/macros/s/AKfycby7c_WqYrceBFYevegXvsiq-2bNcYclYbg52tb9ZNUMm2sTdurj3yrwT5y-kdY8Hvq2NA/exec"  # Add Procera User Feedback Apps Script /exec endpoint when deployed.
         run: |
           python - <<'PY'
           import json
