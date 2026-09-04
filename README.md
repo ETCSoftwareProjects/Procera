@@ -78,6 +78,23 @@ Each release includes a version-specific Procera User Manual in PDF format.
 
 Users should retain the exact Procera version, template version, PCM files, and analysis settings used in teaching or research work.
 
+## Procera User Rating
+
+Users who have used Procera are invited to provide feedback through the common Procera User Feedback survey.
+
+The public rating is based only on the response to:
+
+> **Overall, how would you rate Procera?**
+
+Ratings use a five-point scale. To avoid displaying unstable ratings based on very small numbers of responses, a public rating is shown only after at least **10 responses** have been collected. Other survey responses are not published on this page.
+
+<!-- PROCERA_RATING_START -->
+**Not yet rated**  
+**Responses:** 0
+<!-- PROCERA_RATING_END -->
+
+[Provide Procera User Feedback](https://docs.google.com/forms/d/e/1FAIpQLScPnSf4UaFd5WfNsERoe8g_Zh7tJe5UAivC4EtMrCoFdbBgtQ/viewform?usp=publish-editor)
+
 ## Bug Reports and Feature Requests
 
 Reproducible software problems and suggestions may be submitted through [GitHub Issues](../../issues).
