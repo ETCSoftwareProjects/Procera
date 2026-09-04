@@ -1,4 +1,4 @@
-name: Update Activity Ratings
+name: Update Procera and Activity Ratings
 
 on:
   workflow_dispatch:
@@ -16,12 +16,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Update activity ratings and leaderboard
+      - name: Update Procera rating, activity ratings, and leaderboard
         env:
           PR001_URL: "https://script.google.com/macros/s/AKfycbx_mDzK93rJo_4NVPRBIYxQFRvatd9c2QEHpJSRx_y7BafuAPWIU1MryUVJ50MfOk5Z4w/exec"
           PR002_URL: "https://script.google.com/macros/s/AKfycbyi6os1IJG1t92GvHucW6VEAJGSiEhlzkGB9chR6e2vuohXYDecEtv-2a46DiufOtgn/exec"
           PR003_URL: "https://script.google.com/macros/s/AKfycby2xkSCE54PXRNvQY2AlfmGj5qeKMPqKFJ9Eynau1DNLxqA2l8uJsoUmDK2J_GUcmE/exec"
           PR004_URL: ""  # Add PR-004 Apps Script /exec endpoint when available.
+          PROCERA_URL: ""  # Add Procera User Feedback Apps Script /exec endpoint when deployed.
         run: |
           python - <<'PY'
           import json
@@ -32,6 +33,7 @@ jobs:
 
           BASE = Path("Course Materials")
           INDEX = BASE / "Readme.md"
+          ROOT_README = Path("README.md")
 
           activities = [
               {
@@ -246,6 +248,56 @@ jobs:
 
               return new_text
 
+          def update_procera_readme(path, data):
+              responses = int(data["responses"])
+              rating = public_rating(data)
+
+              if responses < 10:
+                  block = (
+                      "<!-- PROCERA_RATING_START -->\n"
+                      "**Not yet rated**  \n"
+                      f"**Responses:** {responses}\n"
+                      "<!-- PROCERA_RATING_END -->"
+                  )
+              else:
+                  block = (
+                      "<!-- PROCERA_RATING_START -->\n"
+                      f"**{rating}**  \n"
+                      f"**Responses:** {responses}\n"
+                      "<!-- PROCERA_RATING_END -->"
+                  )
+
+              text = path.read_text(encoding="utf-8")
+
+              text, count = re.subn(
+                  r"<!-- PROCERA_RATING_START -->.*?<!-- PROCERA_RATING_END -->",
+                  block,
+                  text,
+                  flags=re.S,
+              )
+
+              if count != 1:
+                  raise RuntimeError(
+                      f"{path}: Procera rating block not found."
+                  )
+
+              path.write_text(text, encoding="utf-8")
+
+          procera_url = os.environ.get("PROCERA_URL", "").strip()
+          if procera_url:
+              procera_data = fetch(procera_url)
+              print("PROCERA", procera_data)
+
+              if procera_data.get("activity") != "PROCERA":
+                  raise RuntimeError(
+                      "Endpoint mismatch for Procera User Feedback."
+                  )
+
+              get_rating_value(procera_data)
+              update_procera_readme(ROOT_README, procera_data)
+          else:
+              print("PROCERA_URL is empty; skipping Procera user rating update.")
+
           index_text = INDEX.read_text(encoding="utf-8")
           results = []
 
@@ -284,7 +336,7 @@ jobs:
 
           INDEX.write_text(index_text, encoding="utf-8")
 
-          print("Ratings and leaderboard updated successfully.")
+          print("Procera rating, activity ratings, and leaderboard updated successfully.")
           PY
 
       - name: Commit rating changes
@@ -297,11 +349,12 @@ jobs:
           git add "Course Materials/PR-003/Readme.md"
           git add "Course Materials/PR-004/Readme.md"
           git add "Course Materials/Readme.md"
+          git add "README.md"
 
           if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0
           fi
 
-          git commit -m "Update activity ratings and leaderboard"
+          git commit -m "Update Procera and activity ratings"
           git push
