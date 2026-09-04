@@ -21,6 +21,7 @@ jobs:
           PR001_URL: "https://script.google.com/macros/s/AKfycbx_mDzK93rJo_4NVPRBIYxQFRvatd9c2QEHpJSRx_y7BafuAPWIU1MryUVJ50MfOk5Z4w/exec"
           PR002_URL: "https://script.google.com/macros/s/AKfycbyi6os1IJG1t92GvHucW6VEAJGSiEhlzkGB9chR6e2vuohXYDecEtv-2a46DiufOtgn/exec"
           PR003_URL: "https://script.google.com/macros/s/AKfycby2xkSCE54PXRNvQY2AlfmGj5qeKMPqKFJ9Eynau1DNLxqA2l8uJsoUmDK2J_GUcmE/exec"
+          PR004_URL: ""  # Add PR-004 Apps Script /exec endpoint when available.
         run: |
           python - <<'PY'
           import json
@@ -49,6 +50,14 @@ jobs:
                   "readme": BASE / "PR-003" / "Readme.md",
               },
           ]
+
+          pr004_url = os.environ.get("PR004_URL", "").strip()
+          if pr004_url:
+              activities.append({
+                  "id": "PR-004",
+                  "url": pr004_url,
+                  "readme": BASE / "PR-004" / "Readme.md",
+              })
 
           def fetch(url):
               with urllib.request.urlopen(url) as response:
@@ -286,6 +295,7 @@ jobs:
           git add "Course Materials/PR-001/Readme.md"
           git add "Course Materials/PR-002/Readme.md"
           git add "Course Materials/PR-003/Readme.md"
+          git add "Course Materials/PR-004/Readme.md"
           git add "Course Materials/Readme.md"
 
           if git diff --cached --quiet; then
